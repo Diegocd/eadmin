@@ -1,4 +1,4 @@
-package es.fpdual.eadmin.eadmin.servicio.impl;
+package es.fpdual.eadmin.eadmin.servicio.Impl;
 
 import static org.junit.Assert.*;
 
@@ -19,43 +19,40 @@ import es.fpdual.eadmin.eadmin.servicio.Impl.ServicioDocumentoImpl;
 
 public class ServicioDocumentoImplTest {
 
-	private ServicioDocumento servicioDocumento;
+	private ServicioDocumentoImpl servicioDocumento;
 	private static final Documento DOCUMENTO = mock(Documento.class);
 	private RepositorioDocumento repositorioDocumento = mock(RepositorioDocumento.class);
 
 	@Before
 	public void instaciarObjetosDeServicio() {
 
-		this.servicioDocumento = new ServicioDocumentoImpl(repositorioDocumento);
+		this.servicioDocumento = spy(new ServicioDocumentoImpl(repositorioDocumento));
 		when(DOCUMENTO.getCodigo()).thenReturn(1);
-		when(DOCUMENTO.getFechaCreacion()).thenReturn(new Date(16/12/2010));
+		when(DOCUMENTO.getFechaCreacion()).thenReturn(new Date(16 / 12 / 2010));
 		when(DOCUMENTO.getNombre()).thenReturn("nombre");
+		when(DOCUMENTO.getFechaUltimaModificacion()).thenReturn(new Date());
 	}
 
 	@Test
 	public void deberiaAlmacenarDocumento() {
-		
-		final Documento resultado = this.servicioDocumento.altaDocumento(DOCUMENTO);
+		final Documento documentoModificado = mock(Documento.class);
+		doReturn(documentoModificado).when(servicioDocumento).obtenerDocumentoConFechaCorrectaParaAlta(DOCUMENTO);
+		Documento resultado = this.servicioDocumento.altaDocumento(DOCUMENTO);
 
-		verify(this.repositorioDocumento).altaDocumento(any());
-		assertEquals(resultado.getCodigo(), DOCUMENTO.getCodigo());
-		assertEquals(resultado.getNombre(), DOCUMENTO.getNombre());
-		assertNotEquals(resultado.getFechaCreacion(), DOCUMENTO.getFechaCreacion());
+		verify(this.repositorioDocumento).altaDocumento(documentoModificado);
+		assertSame(documentoModificado, resultado);
 
 	}
 
 	@Test
 	public void deberiaModificarDocumento() {
-		
-		when(DOCUMENTO.getFechaUltimaModificacion()).thenReturn(new Date());
-		
-		final Documento resultado = this.servicioDocumento.modificarDocumento(DOCUMENTO);
 
-		verify(this.repositorioDocumento).modificarDocumento(any());
-		assertEquals(Integer.valueOf(1), DOCUMENTO.getCodigo());
-		assertEquals("nombre", resultado.getNombre(), DOCUMENTO.getNombre());
-		assertEquals(new Date(16/12/2010), DOCUMENTO.getFechaCreacion());
-		assertNotEquals(DOCUMENTO.getFechaCreacion(), DOCUMENTO.getFechaUltimaModificacion());
+		final Documento documentoModificado = mock(Documento.class);
+		doReturn(documentoModificado).when(servicioDocumento).obtenerDocumentoConFechaCorrectaParaModificar(DOCUMENTO);
+		Documento resultado = this.servicioDocumento.modificarDocumento(DOCUMENTO);
+
+		verify(this.repositorioDocumento).modificarDocumento(documentoModificado);
+		assertSame(documentoModificado, resultado);
 
 	}
 
@@ -67,24 +64,24 @@ public class ServicioDocumentoImplTest {
 		verify(this.repositorioDocumento).eliminarDocumento(1);
 
 	}
-	
+
 	@Test
 	public void deberiaLLamarAObtenerUnDocumento() {
-		
+
 		when(repositorioDocumento.obtenerDocumentoPorCodigo(1)).thenReturn(DOCUMENTO);
 		final Documento resultado = servicioDocumento.obtenerDocumentoPorCodigo(1);
-		
-		assertSame(resultado,DOCUMENTO);
-		
+
+		assertSame(resultado, DOCUMENTO);
+
 	}
-	
+
 	@Test
 	public void deberiaLlamarAObtenerTodosLosDocumentos() {
 		List<Documento> resultadoEsperado = new ArrayList<Documento>();
 		when(repositorioDocumento.obtenerTodosLosDocumentos()).thenReturn(resultadoEsperado);
 		List<Documento> resultado = this.servicioDocumento.obtenerTodosLosDocumentos();
 
-		assertSame(resultado,resultadoEsperado);
+		assertSame(resultado, resultadoEsperado);
 	}
 
 }

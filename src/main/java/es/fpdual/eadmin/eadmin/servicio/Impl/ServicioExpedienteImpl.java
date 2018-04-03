@@ -66,16 +66,26 @@ public class ServicioExpedienteImpl implements ServicioExpediente {
 		return new Date();
 	}
 
-	private Expediente obtenerExpedienteConFechaCorrectaParaAlta(Expediente expediente) {
+	protected Expediente obtenerExpedienteConFechaCorrectaParaAlta(Expediente expediente) {
 
 		return new ExpedienteBuilder().clonar(expediente).conFechaCreacion(dameFechaActual())
 				.conFechaArchivado(dameFechaActual()).conFechaUltimaModificacion(dameFechaActual()).construir();
 	}
 
-	private Expediente obtenerExpedienteConFechaCorrectaParaActualizar(Expediente expediente) {
+	protected Expediente obtenerExpedienteConFechaCorrectaParaActualizar(Expediente expediente) {
 
 		return new ExpedienteBuilder().clonar(expediente).conFechaArchivado(dameFechaActual())
 				.conFechaUltimaModificacion(dameFechaActual()).construir();
+	}
+
+	@Override
+	public Expediente obtenerExpedientePorCodigo(Integer codigo) {
+		return repositorioExpediente.obtenerExpedientePorCodigo(codigo);
+	}
+
+	@Override
+	public List<Expediente> obtenerTodosLosExpedientes() {
+		return repositorioExpediente.obtenerTodosLosExpedientes();
 	}
 
 }

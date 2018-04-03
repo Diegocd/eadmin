@@ -15,21 +15,20 @@ import es.fpdual.eadmin.eadmin.modelo.Documento;
 import es.fpdual.eadmin.eadmin.modelo.EstadoDocumento;
 import es.fpdual.eadmin.eadmin.modelo.EstadoExpediente;
 import es.fpdual.eadmin.eadmin.modelo.Expediente;
+import es.fpdual.eadmin.eadmin.repositorio.impl.RepositorioExpedienteImpl;
 
 public class RepositorioExpedienteImplTest {
 
-	private static final Date FECHA_CREACION = new Date();
 	private RepositorioExpedienteImpl repositorioExpedienteImpl;
-	private Expediente expediente;
+	private Expediente expediente = mock(Expediente.class);
 	private Documento documento = mock(Documento.class);
 	
 
 	@Before
 	public void instaciarObjetos() {
 		repositorioExpedienteImpl = new RepositorioExpedienteImpl();
-		expediente = new Expediente(1, "Nombre", FECHA_CREACION, FECHA_CREACION, true, EstadoExpediente.ARCHIVADO,
-				new ArrayList<Documento>(), FECHA_CREACION);
-
+		when(expediente.getCodigo()).thenReturn(1);
+		when(documento.getCodigo()).thenReturn(1);
 	}
 
 	@Test
@@ -76,7 +75,7 @@ public class RepositorioExpedienteImplTest {
 	public final void testEliminarExpediente() {
 
 		repositorioExpedienteImpl.getListaExpedientes().add(expediente);
-		repositorioExpedienteImpl.eliminarExpediente(expediente.getCodigo());
+		repositorioExpedienteImpl.eliminarExpediente(1);
 
 		assertTrue(repositorioExpedienteImpl.getListaExpedientes().isEmpty());
 
@@ -85,16 +84,16 @@ public class RepositorioExpedienteImplTest {
 	@Test
 	public final void testEliminarDocumentoInexistente() {
 
-		repositorioExpedienteImpl.eliminarExpediente(expediente.getCodigo());
+		repositorioExpedienteImpl.eliminarExpediente(1);
 		assertTrue(repositorioExpedienteImpl.getListaExpedientes().isEmpty());
 
 	}
 	
 	@Test
 	public final void testAsociarDocumentoAlExpediente() {
-		
+		when(expediente.getListaDocumento()).thenReturn(new ArrayList<Documento>());
 		repositorioExpedienteImpl.altaExpediente(expediente);
-		repositorioExpedienteImpl.asociarDocumentoAlExpediente(expediente.getCodigo(), documento);
+		repositorioExpedienteImpl.asociarDocumentoAlExpediente(1, documento);
 		
 		assertTrue(expediente.getListaDocumento().contains(documento));
 	}
@@ -102,7 +101,7 @@ public class RepositorioExpedienteImplTest {
 	@Test
 	public final void testAsociarDocumentoAExpedienteInexistente() {
 		
-		assertNull(repositorioExpedienteImpl.asociarDocumentoAlExpediente(expediente.getCodigo(), documento));
+		assertNull(repositorioExpedienteImpl.asociarDocumentoAlExpediente(1, documento));
 		
 	}
 	
@@ -110,8 +109,8 @@ public class RepositorioExpedienteImplTest {
 	public final void testAsociarDocumentoExistenteAExpediente() {
 		
 		repositorioExpedienteImpl.altaExpediente(expediente);
-		repositorioExpedienteImpl.asociarDocumentoAlExpediente(expediente.getCodigo(), documento);
-		repositorioExpedienteImpl.asociarDocumentoAlExpediente(expediente.getCodigo(), documento);
+		repositorioExpedienteImpl.asociarDocumentoAlExpediente(1, documento);
+		repositorioExpedienteImpl.asociarDocumentoAlExpediente(1, documento);
 		
 		assertEquals(1, repositorioExpedienteImpl.getListaExpedientes().size());
 	}
@@ -119,29 +118,51 @@ public class RepositorioExpedienteImplTest {
 	@Test
 	public final void testDesasociarDocumentoDelExpediente() {
 		
-		when(documento.getCodigo()).thenReturn(1);
 		repositorioExpedienteImpl.altaExpediente(expediente);
-		repositorioExpedienteImpl.asociarDocumentoAlExpediente(expediente.getCodigo(), documento);
-		repositorioExpedienteImpl.desasociarDocumentoDelExpediente(expediente.getCodigo(), documento.getCodigo());
+		repositorioExpedienteImpl.asociarDocumentoAlExpediente(1, documento);
+		repositorioExpedienteImpl.desasociarDocumentoDelExpediente(1, 1);
 		
 		assertFalse(expediente.getListaDocumento().contains(documento));
+		assertTrue(expediente.getListaDocumento().isEmpty());
 	}
 
 	@Test
-	public final void testDessociarDocumentoDeExpedienteInexistente() {
+	public final void testDesasociarDocumentoDeExpedienteInexistente() {
 		
-		assertNull(repositorioExpedienteImpl.desasociarDocumentoDelExpediente(expediente.getCodigo(), documento.getCodigo()));
+		assertNull(repositorioExpedienteImpl.desasociarDocumentoDelExpediente(1, 1));
+		assertTrue(expediente.getListaDocumento().isEmpty());
 		
 	}
 	
 	@Test
 	public final void testDesasociarDocumentoInexistenteEnElExpediente() {
 		
-		when(documento.getCodigo()).thenReturn(1);
 		repositorioExpedienteImpl.altaExpediente(expediente);
-		repositorioExpedienteImpl.desasociarDocumentoDelExpediente(expediente.getCodigo(), documento.getCodigo());
+		repositorioExpedienteImpl.desasociarDocumentoDelExpediente(1, 1);
 		
 		assertFalse(expediente.getListaDocumento().contains(documento));
+		assertTrue(expediente.getListaDocumento().isEmpty());
+	}
+	
+	@Test 
+	public final void testObtenerExpedientePorCodigo() {
+		repositorioExpedienteImpl.getListaExpedientes().add(expediente);
+		
+		assertEquals(expediente, repositorioExpedienteImpl.obtenerExpedientePorCodigo(1));
+		
+	}
+	
+	@Test 
+	public final void testObtenerExpedientePorCodigoInexistente() {
+		
+		assertEquals(null, repositorioExpedienteImpl.obtenerExpedientePorCodigo(1));
+		
+	}
+	
+	@Test
+	public final void testObtenerTodosLosExpedientes() {
+		
+		assertEquals(repositorioExpedienteImpl.getListaExpedientes(),repositorioExpedienteImpl.obtenerTodosLosExpedientes());
 	}
 	
 

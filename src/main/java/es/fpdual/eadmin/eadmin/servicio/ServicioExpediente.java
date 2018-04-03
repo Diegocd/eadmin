@@ -1,18 +1,24 @@
 package es.fpdual.eadmin.eadmin.servicio;
 
+import java.util.List;
+
 import es.fpdual.eadmin.eadmin.modelo.Documento;
 import es.fpdual.eadmin.eadmin.modelo.Expediente;
 
 public interface ServicioExpediente {
 	
-	Expediente altaExpediente(Expediente expediente);
+	public abstract Expediente altaExpediente(Expediente expediente);
 
-	Expediente modificarExpediente(Expediente expediente);
+	public abstract Expediente modificarExpediente(Expediente expediente);
 
-	void eliminarExpediente(Integer codigo);
+	public abstract void eliminarExpediente(Integer codigo);
 	
-	Expediente asociarDocumentoAlExpediente(Integer codigoExpediente, Documento documento);
+	public abstract Expediente asociarDocumentoAlExpediente(Integer codigoExpediente, Documento documento);
 	
-	Expediente desasociarDocumentoDelExpediente(Integer codigoExpediente, Integer codigoDocumento);
+	public abstract Expediente desasociarDocumentoDelExpediente(Integer codigoExpediente, Integer codigoDocumento);
+	
+	public abstract Expediente obtenerExpedientePorCodigo(Integer codigo);
+
+	public abstract List<Expediente> obtenerTodosLosExpedientes();
 
 }

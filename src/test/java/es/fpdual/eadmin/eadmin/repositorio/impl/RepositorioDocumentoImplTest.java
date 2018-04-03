@@ -9,6 +9,7 @@ import org.junit.Test;
 
 import es.fpdual.eadmin.eadmin.modelo.Documento;
 import es.fpdual.eadmin.eadmin.modelo.EstadoDocumento;
+import es.fpdual.eadmin.eadmin.repositorio.impl.RepositorioDocumentoImpl;
 
 public class RepositorioDocumentoImplTest {
 
