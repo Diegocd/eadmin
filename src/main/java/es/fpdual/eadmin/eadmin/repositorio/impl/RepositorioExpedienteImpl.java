@@ -26,6 +26,7 @@ public class RepositorioExpedienteImpl implements RepositorioExpediente {
 			throw new IllegalArgumentException("El documento ya existe");
 		}
 		listaExpedientes.add(d);
+		System.out.println("El expediente se ha dado de alta con éxito");
 
 	}
 

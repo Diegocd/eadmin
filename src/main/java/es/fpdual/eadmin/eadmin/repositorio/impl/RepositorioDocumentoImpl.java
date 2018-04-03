@@ -25,6 +25,7 @@ public class RepositorioDocumentoImpl implements RepositorioDocumento {
 			throw new IllegalArgumentException("El documento ya existe");
 		}
 		listaDocumentos.add(d);
+		System.out.println("El documento se ha dado de alta con éxito");
 
 	}
 
