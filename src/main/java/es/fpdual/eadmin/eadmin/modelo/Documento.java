@@ -44,7 +44,7 @@ public class Documento extends ModeloAdminElectronica {
 
 	@Override
 	public String toString() {
-		return "Documento con código = " + codigo;
+		return "Documento con código " + codigo;
 	}
 
 }
