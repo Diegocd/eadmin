@@ -1,5 +1,8 @@
 package es.fpdual.eadmin.eadmin.repositorio.impl;
 
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -21,6 +24,51 @@ public class RepositorioDocumentoImpl implements RepositorioDocumento {
 		return listaDocumentos;
 	}
 
+	public void guardarDatosEnArchivo() {
+		String ruta = "C:\\Users\\formacion\\Desktop\\Proyectos Java\\eadmin\\ListaDocumentos.txt";
+		FileWriter fichero = null;
+		PrintWriter sw = null;
+		try {
+			fichero = new FileWriter(ruta, true);
+			sw = new PrintWriter(fichero);
+			for (Documento datos : listaDocumentos) {
+				sw.println(datos.toString() + " Nombre: " + datos.getNombre() + " Fecha de creación: "
+						+ datos.getFechaCreacion() + " Público: " + datos.getPublico() + " Estado: " + datos.getEstado()
+						+ " Última modificación: " + datos.getFechaUltimaModificacion() + " Encriptación: "
+						+ datos.getDocumentoEncriptado());
+			}
+			sw.println(
+					"****************************************************************************************************");
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} finally {
+			sw.close();
+		}
+	}
+
+	public void guardarDocumento(Documento datos, int archivo) {
+		String[] listaArchivos = { "C:\\Users\\formacion\\Desktop\\Proyectos Java\\eadmin\\AltaDocumentos.txt",
+				"C:\\Users\\formacion\\Desktop\\Proyectos Java\\eadmin\\ModificarDocumentos.txt",
+				"C:\\Users\\formacion\\Desktop\\Proyectos Java\\eadmin\\BajaDocumentos.txt" };
+		FileWriter fichero = null;
+		PrintWriter sw = null;
+		try {
+			fichero = new FileWriter(listaArchivos[archivo], true);
+			sw = new PrintWriter(fichero);
+			sw.println(datos.toString() + " Nombre: " + datos.getNombre() + " Fecha de creación: "
+					+ datos.getFechaCreacion() + " Público: " + datos.getPublico() + " Estado: " + datos.getEstado()
+					+ " Última modificación: " + datos.getFechaUltimaModificacion() + " Encriptación: "
+					+ datos.getDocumentoEncriptado());
+			sw.println(
+					"****************************************************************************************************");
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			sw.close();
+		}
+	}
+
 	@Override
 	public void altaDocumento(Documento d) {
 
@@ -29,6 +77,7 @@ public class RepositorioDocumentoImpl implements RepositorioDocumento {
 		}
 		listaDocumentos.add(d);
 		LOGGER.info(d.toString() + " se ha dado de alta con éxito");
+		guardarDocumento(d, 0);
 	}
 
 	@Override
@@ -42,20 +91,21 @@ public class RepositorioDocumentoImpl implements RepositorioDocumento {
 			throw new IllegalArgumentException("El documento ha sido modificado ilegalmente");
 		}
 		listaDocumentos.set(listaDocumentos.indexOf(d), d);
-
+		guardarDocumento(d, 1);
 	}
 
 	@Override
 	public void eliminarDocumento(Integer codigo) {
 		LOGGER.info("Entrando en el método eliminarDocumento: ");
-		Optional<Documento> documentoEncontrado = null;
-		documentoEncontrado = listaDocumentos.stream().filter(d -> d.getCodigo().equals(codigo)).findFirst();
+		Optional<Documento> documentoEncontrado = listaDocumentos.stream().filter(d -> d.getCodigo().equals(codigo))
+				.findFirst();
 
 		if (documentoEncontrado.isPresent()) {
-			LOGGER.info("Documento encontrado. Borrando documento y saliendo del método ObtenerDocumentoPorCodigo...");
+			LOGGER.info("Documento encontrado. Borrando documento y saliendo del método EliminarDocumento...");
 			listaDocumentos.remove(documentoEncontrado.get());
-		}else {
-		LOGGER.info("Documento no encontrado. Saliendo del método ObtenerDocumentoPorCodigo...");
+			guardarDocumento(documentoEncontrado.get(), 2);
+		} else {
+			LOGGER.info("Documento no encontrado. Saliendo del método EliminarDocumento...");
 		}
 	}
 

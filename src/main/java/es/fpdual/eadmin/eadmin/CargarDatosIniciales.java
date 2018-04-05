@@ -36,13 +36,34 @@ public class CargarDatosIniciales implements ApplicationRunner {
 				.altaDocumento(new Documento(2, "documento2", FECHA, true, EstadoDocumento.APROBADO, FECHA));
 		repositorioDocumento
 				.altaDocumento(new Documento(3, "documento3", FECHA, false, EstadoDocumento.ELIMINADO, FECHA));
+		repositorioDocumento
+				.altaDocumento(new Documento(4, "documento4", FECHA, false, EstadoDocumento.ELIMINADO, FECHA));
+		repositorioDocumento
+				.altaDocumento(new Documento(5, "documento5", FECHA, false, EstadoDocumento.ELIMINADO, FECHA));
+		
+		repositorioDocumento.guardarDatosEnArchivo();
+		
+		repositorioDocumento
+		.modificarDocumento(new Documento(2, "documento2", FECHA, false, EstadoDocumento.ELIMINADO, FECHA));
+		repositorioDocumento
+		.modificarDocumento(new Documento(4, "documento4", FECHA, true, EstadoDocumento.ELIMINADO, FECHA));
+		
+		repositorioDocumento.guardarDatosEnArchivo();
+		
+		repositorioDocumento.eliminarDocumento(1);
+		repositorioDocumento.eliminarDocumento(3);
+		repositorioDocumento.eliminarDocumento(5);
 
-		repositorioExpediente.altaExpediente(new Expediente(1, "expediente1", FECHA, FECHA, true,
-				EstadoExpediente.ARCHIVADO, new ArrayList<Documento>(), FECHA));
-		repositorioExpediente.altaExpediente(new Expediente(2, "expediente2", FECHA, FECHA, true,
-				EstadoExpediente.EN_TRAMITE, new ArrayList<Documento>(), FECHA));
-		repositorioExpediente.altaExpediente(new Expediente(3, "expediente3", FECHA, FECHA, false,
-				EstadoExpediente.INICIADO, new ArrayList<Documento>(), FECHA));
+		repositorioDocumento.guardarDatosEnArchivo();
+		// repositorioExpediente.altaExpediente(new Expediente(1, "expediente1", FECHA,
+		// FECHA, true,
+		// EstadoExpediente.ARCHIVADO, new ArrayList<Documento>(), FECHA));
+		// repositorioExpediente.altaExpediente(new Expediente(2, "expediente2", FECHA,
+		// FECHA, true,
+		// EstadoExpediente.EN_TRAMITE, new ArrayList<Documento>(), FECHA));
+		// repositorioExpediente.altaExpediente(new Expediente(3, "expediente3", FECHA,
+		// FECHA, false,
+		// EstadoExpediente.INICIADO, new ArrayList<Documento>(), FECHA));
 	}
 
 }
