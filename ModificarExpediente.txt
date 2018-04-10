@@ -1,6 +1,0 @@
-Expediente código = 2, nombre = expediente2, fechaCreacion = Tue Apr 10 08:25:48 CEST 2018, fechaArchivado = Tue Apr 10 08:25:48 CEST 2018, publico = true, estado = ARCHIVADOÚltima modificaciónTue Apr 10 08:25:48 CEST 2018
-La lista de documentos del expediente 2 está vacía
-****************************************************************************************************
-Expediente código = 4, nombre = expediente4, fechaCreacion = Tue Apr 10 08:25:48 CEST 2018, fechaArchivado = Tue Apr 10 08:25:48 CEST 2018, publico = true, estado = ARCHIVADOÚltima modificaciónTue Apr 10 08:25:48 CEST 2018
-La lista de documentos del expediente 4 está vacía
-****************************************************************************************************
