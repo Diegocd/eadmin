@@ -53,6 +53,7 @@ public class RepositorioDocumentoImpl implements RepositorioDocumento {
 						+ " Última modificación: " + datos.getFechaUltimaModificacion() + " Encriptación: "
 						+ datos.getDocumentoEncriptado());
 				exportExcel("LISTA", datos, "ListaDoc.xlsx");
+				exportTodo();
 			}
 			sw.println(
 					"****************************************************************************************************");
@@ -94,6 +95,7 @@ public class RepositorioDocumentoImpl implements RepositorioDocumento {
 		LOGGER.info(d.toString() + " se ha dado de alta con éxito");
 		guardarDocumento(d, 0);
 		exportExcel("ALTA", d, "AltaDoc.xlsx");
+		exportTodo();
 	}
 
 	@Override
@@ -109,6 +111,7 @@ public class RepositorioDocumentoImpl implements RepositorioDocumento {
 		listaDocumentos.set(listaDocumentos.indexOf(d), d);
 		guardarDocumento(d, 1);
 		exportExcel("MOD", d, "ModDoc.xlsx");
+		exportTodo();
 	}
 
 	@Override
@@ -122,6 +125,7 @@ public class RepositorioDocumentoImpl implements RepositorioDocumento {
 			listaDocumentos.remove(documentoEncontrado.get());
 			guardarDocumento(documentoEncontrado.get(), 2);
 			exportExcel("BAJA", documentoEncontrado.get(), "BajaDoc.xlsx");
+			exportTodo();
 		} else {
 			LOGGER.info("Documento no encontrado. Saliendo del método EliminarDocumento...");
 		}
@@ -310,14 +314,19 @@ public class RepositorioDocumentoImpl implements RepositorioDocumento {
 			
 			XSSFSheet hoja = libro.createSheet(nombres[i]);
 			Integer numeroLineas = 0;
-			//File archivoExcel = new File("TodosDoc.xlsx");
+			File archivoExcel = new File(ficheros[i]);
+			if (!archivoExcel.exists()) {
+					data.put("0", new Object[] { "ID", "NOMBRE", "FECHA", "PUBLICO", "ESTADO", "ULTIMA MOD", "ENCRIPTACIÓN" });
+					numeroLineas++;
+			}else {
 			ArrayList<String[]> datosExcel = importExcel(ficheros[i], 7);
 			ListIterator<String[]> it = datosExcel.listIterator();
-
+			
 			while (it.hasNext()) {
 				numeroLineas++;
 				String[] datos = it.next();
 				data.put(numeroLineas.toString(), datos);
+			}
 			}
 			Set<String> keyset = data.keySet();
 			int rownum = 0;

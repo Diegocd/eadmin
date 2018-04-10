@@ -86,7 +86,6 @@ public class CargarDatosIniciales implements ApplicationRunner {
 		repositorioExpediente.eliminarExpediente(5);
 		
 		repositorioExpediente.guardarTodosExpedientes();
-		repositorioDocumentoImpl.exportTodo();
 	}
 
 }
