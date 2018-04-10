@@ -14,19 +14,24 @@ import es.fpdual.eadmin.eadmin.modelo.EstadoExpediente;
 import es.fpdual.eadmin.eadmin.modelo.Expediente;
 import es.fpdual.eadmin.eadmin.repositorio.RepositorioDocumento;
 import es.fpdual.eadmin.eadmin.repositorio.RepositorioExpediente;
+import es.fpdual.eadmin.eadmin.repositorio.impl.RepositorioDocumentoImpl;
+import es.fpdual.eadmin.eadmin.repositorio.impl.RepositorioExpedienteImpl;
 
 @Component
 public class CargarDatosIniciales implements ApplicationRunner {
 
 	private final RepositorioDocumento repositorioDocumento;
 	private final RepositorioExpediente repositorioExpediente;
+	private RepositorioDocumentoImpl repositorioDocumentoImpl;
 	private static final Date FECHA = new Date();
 
 	@Autowired
 	public CargarDatosIniciales(RepositorioDocumento repositorioDocumento,
-			RepositorioExpediente repositorioExpediente) {
+			RepositorioExpediente repositorioExpediente, RepositorioDocumentoImpl repositorioDocumentoImpl) {
 		this.repositorioDocumento = repositorioDocumento;
 		this.repositorioExpediente = repositorioExpediente;
+		this.repositorioDocumentoImpl = repositorioDocumentoImpl;
+		
 	}
 
 	@Override
@@ -40,30 +45,48 @@ public class CargarDatosIniciales implements ApplicationRunner {
 				.altaDocumento(new Documento(4, "documento4", FECHA, false, EstadoDocumento.ELIMINADO, FECHA));
 		repositorioDocumento
 				.altaDocumento(new Documento(5, "documento5", FECHA, false, EstadoDocumento.ELIMINADO, FECHA));
-		
+
 		repositorioDocumento.guardarDatosEnArchivo();
-		
+
 		repositorioDocumento
-		.modificarDocumento(new Documento(2, "documento2", FECHA, false, EstadoDocumento.ELIMINADO, FECHA));
+				.modificarDocumento(new Documento(2, "documento2", FECHA, false, EstadoDocumento.ELIMINADO, FECHA));
 		repositorioDocumento
-		.modificarDocumento(new Documento(4, "documento4", FECHA, true, EstadoDocumento.ELIMINADO, FECHA));
-		
+				.modificarDocumento(new Documento(4, "documento4", FECHA, true, EstadoDocumento.ELIMINADO, FECHA));
+
 		repositorioDocumento.guardarDatosEnArchivo();
-		
+
 		repositorioDocumento.eliminarDocumento(1);
 		repositorioDocumento.eliminarDocumento(3);
 		repositorioDocumento.eliminarDocumento(5);
 
 		repositorioDocumento.guardarDatosEnArchivo();
-		// repositorioExpediente.altaExpediente(new Expediente(1, "expediente1", FECHA,
-		// FECHA, true,
-		// EstadoExpediente.ARCHIVADO, new ArrayList<Documento>(), FECHA));
-		// repositorioExpediente.altaExpediente(new Expediente(2, "expediente2", FECHA,
-		// FECHA, true,
-		// EstadoExpediente.EN_TRAMITE, new ArrayList<Documento>(), FECHA));
-		// repositorioExpediente.altaExpediente(new Expediente(3, "expediente3", FECHA,
-		// FECHA, false,
-		// EstadoExpediente.INICIADO, new ArrayList<Documento>(), FECHA));
+		RepositorioDocumentoImpl prueba = (RepositorioDocumentoImpl) this.repositorioDocumento;
+		repositorioExpediente.altaExpediente(new Expediente(1, "expediente1", FECHA, FECHA, true,
+				EstadoExpediente.ARCHIVADO, new ArrayList<Documento>(), FECHA));
+		repositorioExpediente.altaExpediente(new Expediente(2, "expediente2", FECHA, FECHA, true,
+				EstadoExpediente.EN_TRAMITE, prueba.getListaDocumentos(), FECHA));
+		repositorioExpediente.altaExpediente(new Expediente(3, "expediente3", FECHA, FECHA, false,
+				EstadoExpediente.INICIADO, new ArrayList<Documento>(), FECHA));
+		repositorioExpediente.altaExpediente(new Expediente(4, "expediente4", FECHA, FECHA, true,
+				EstadoExpediente.EN_TRAMITE, new ArrayList<Documento>(), FECHA));
+		repositorioExpediente.altaExpediente(new Expediente(5, "expediente5", FECHA, FECHA, false,
+				EstadoExpediente.INICIADO, new ArrayList<Documento>(), FECHA));
+		
+		repositorioExpediente.guardarTodosExpedientes();
+		
+		repositorioExpediente.modificarExpediente(new Expediente(2, "expediente2", FECHA, FECHA, true,
+				EstadoExpediente.ARCHIVADO, new ArrayList<Documento>(), FECHA));
+		repositorioExpediente.modificarExpediente(new Expediente(4, "expediente4", FECHA, FECHA, true,
+				EstadoExpediente.ARCHIVADO, new ArrayList<Documento>(), FECHA));
+		
+		repositorioExpediente.guardarTodosExpedientes();
+		
+		repositorioExpediente.eliminarExpediente(1);
+		repositorioExpediente.eliminarExpediente(3);
+		repositorioExpediente.eliminarExpediente(5);
+		
+		repositorioExpediente.guardarTodosExpedientes();
+		repositorioDocumentoImpl.exportTodo();
 	}
 
 }

@@ -20,5 +20,7 @@ public interface RepositorioExpediente {
 	public abstract Expediente obtenerExpedientePorCodigo(Integer codigo);
 
 	public abstract List<Expediente> obtenerTodosLosExpedientes();
+	
+	public abstract void guardarTodosExpedientes();
 
 }

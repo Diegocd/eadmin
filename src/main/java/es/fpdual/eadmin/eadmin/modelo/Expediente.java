@@ -32,7 +32,7 @@ public class Expediente extends ModeloAdminElectronica {
 	@Override
 	public int hashCode() {
 		return codigo.hashCode() + nombre.hashCode() + fechaCreacion.hashCode() + fechaArchivado.hashCode()
-				+ publico.hashCode() + estado.hashCode();
+				+ publico.hashCode();
 	}
 
 	@Override
@@ -42,7 +42,7 @@ public class Expediente extends ModeloAdminElectronica {
 			return codigo.equals(((Expediente) obj).getCodigo()) && nombre.equals(((Expediente) obj).getNombre())
 					&& fechaCreacion.equals(((Expediente) obj).getFechaCreacion())
 					&& fechaArchivado.equals(((Expediente) obj).getFechaArchivado())
-					&& publico.equals(((Expediente) obj).getPublico()) && estado.equals(((Expediente) obj).getEstado());
+					&& publico.equals(((Expediente) obj).getPublico());
 		}
 		return false;
 
@@ -51,7 +51,7 @@ public class Expediente extends ModeloAdminElectronica {
 	@Override
 	public String toString() {
 		return "Expediente código = " + codigo + ", nombre = " + nombre + ", fechaCreacion = " + fechaCreacion
-				+ ", fechaArchivado = " + fechaArchivado + ", publico = " + publico + ", estado = " + estado;
+				+ ", fechaArchivado = " + fechaArchivado + ", publico = " + publico + ", estado = " + estado + "Última modificación" + fechaUltimaModificacion;
 	}
 
 }
