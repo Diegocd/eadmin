@@ -1,5 +1,6 @@
 package es.fpdual.eadmin.eadmin.repositorio.impl;
 
+import java.awt.Color;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -24,9 +25,13 @@ import es.fpdual.eadmin.eadmin.repositorio.RepositorioDocumento;
 
 import org.apache.poi.hssf.usermodel.HSSFCellStyle;
 import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.HorizontalAlignment;
+import org.apache.poi.ss.usermodel.IndexedColors;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFCellStyle;
+import org.apache.poi.xssf.usermodel.XSSFColor;
+import org.apache.poi.xssf.usermodel.XSSFFont;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.slf4j.Logger;
@@ -183,16 +188,25 @@ public class RepositorioDocumentoImpl implements RepositorioDocumento {
 		}
 
 		numeroLineas++;
-		data.put(numeroLineas.toString(), new Object[] { documento.getCodigo(), documento.getNombre(),
-				documento.getFechaCreacion().toString(), documento.getPublico().toString(), documento.getEstado().toString(),
-				documento.getFechaUltimaModificacion().toString(), documento.getDocumentoEncriptado()});
+		data.put(numeroLineas.toString(),
+				new Object[] { documento.getCodigo(), documento.getNombre(), documento.getFechaCreacion().toString(),
+						documento.getPublico().toString(), documento.getEstado().toString(),
+						documento.getFechaUltimaModificacion().toString(), documento.getDocumentoEncriptado() });
 
 		// Creamos el libro de trabajo
 		XSSFWorkbook libro = new XSSFWorkbook();
-		
+
 		// Creamos un estilo de celda y le asignamos alineado central
 		XSSFCellStyle style = libro.createCellStyle();
+		XSSFCellStyle style2 = libro.createCellStyle();
+		XSSFFont negrita = libro.createFont();
 		style.setAlignment(HorizontalAlignment.CENTER);
+		negrita.setBold(true);
+		style2.setFont(negrita);
+		style2.setAlignment(HorizontalAlignment.CENTER);
+		style2.setFillForegroundColor(IndexedColors.AQUA.getIndex());
+
+		
 
 		// Creacion de Hoja
 		XSSFSheet hoja = libro.createSheet(nombreHoja);
@@ -211,7 +225,11 @@ public class RepositorioDocumentoImpl implements RepositorioDocumento {
 				// Creamos la celda
 				Cell cell = row.createCell(cellnum++);
 				// Asignamos el estilo
-				cell.setCellStyle(style);
+				if (rownum == 1) {
+					cell.setCellStyle(style2);
+				}else {	
+					cell.setCellStyle(style);
+				}
 				// Setteamos el valor con el tipo de dato correspondiente
 				if (obj instanceof String)
 					cell.setCellValue((String) obj);
@@ -306,27 +324,40 @@ public class RepositorioDocumentoImpl implements RepositorioDocumento {
 
 		Map<String, Object[]> data = new TreeMap<String, Object[]>();
 		XSSFWorkbook libro = new XSSFWorkbook();
-		XSSFCellStyle style = libro.createCellStyle();
-		style.setAlignment(HorizontalAlignment.CENTER);
+		XSSFCellStyle centrado = libro.createCellStyle();
+		XSSFCellStyle centradoNegrita = libro.createCellStyle();
+		XSSFCellStyle colores = libro.createCellStyle();
+		XSSFFont negrita = libro.createFont();
+		negrita.setBold(true);
+		centradoNegrita.setFont(negrita);
+		centradoNegrita.setFillPattern(CellStyle.SOLID_FOREGROUND);
+		centradoNegrita.setFillForegroundColor(IndexedColors.AQUA.getIndex());
+		colores.setFillPattern(CellStyle.SOLID_FOREGROUND);
+		colores.setFillForegroundColor(IndexedColors.RED.getIndex());
+		
+		centrado.setAlignment(HorizontalAlignment.CENTER);
+		centradoNegrita.setAlignment(HorizontalAlignment.CENTER);
+		colores.setAlignment(HorizontalAlignment.CENTER);
 		String nombres[] = { "ALTA", "MOD", "BAJA", "LISTA" };
 		String ficheros[] = { "AltaDoc.xlsx", "ModDoc.xlsx", "BajaDoc.xlsx", "ListaDoc.xlsx" };
 		for (int i = 0; i < ficheros.length; i++) {
-			
+
 			XSSFSheet hoja = libro.createSheet(nombres[i]);
 			Integer numeroLineas = 0;
 			File archivoExcel = new File(ficheros[i]);
 			if (!archivoExcel.exists()) {
-					data.put("0", new Object[] { "ID", "NOMBRE", "FECHA", "PUBLICO", "ESTADO", "ULTIMA MOD", "ENCRIPTACIÓN" });
-					numeroLineas++;
-			}else {
-			ArrayList<String[]> datosExcel = importExcel(ficheros[i], 7);
-			ListIterator<String[]> it = datosExcel.listIterator();
-			
-			while (it.hasNext()) {
+				data.put("0",
+						new Object[] { "ID", "NOMBRE", "FECHA", "PUBLICO", "ESTADO", "ULTIMA MOD", "ENCRIPTACIÓN" });
 				numeroLineas++;
-				String[] datos = it.next();
-				data.put(numeroLineas.toString(), datos);
-			}
+			} else {
+				ArrayList<String[]> datosExcel = importExcel(ficheros[i], 7);
+				ListIterator<String[]> it = datosExcel.listIterator();
+
+				while (it.hasNext()) {
+					numeroLineas++;
+					String[] datos = it.next();
+					data.put(numeroLineas.toString(), datos);
+				}
 			}
 			Set<String> keyset = data.keySet();
 			int rownum = 0;
@@ -340,7 +371,13 @@ public class RepositorioDocumentoImpl implements RepositorioDocumento {
 				for (Object obj : objArr) {
 					// Creamos la celda
 					Cell cell = row.createCell(cellnum++);
-					cell.setCellStyle(style);
+					if (rownum == 1) {
+						cell.setCellStyle(centradoNegrita);
+					}else if (rownum!=1 && rownum%2==0) {
+						cell.setCellStyle(colores);
+					}else {	
+						cell.setCellStyle(centrado);
+					}
 					// Setteamos el valor con el tipo de dato correspondiente
 					if (obj instanceof String)
 						cell.setCellValue((String) obj);
